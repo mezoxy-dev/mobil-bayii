@@ -2,4 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="facebook_blue">#275698</color>
+    <color name="facebook_white">#F4F4F5</color>
 </resources>

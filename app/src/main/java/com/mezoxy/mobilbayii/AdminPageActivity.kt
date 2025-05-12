@@ -1,20 +1,41 @@
 package com.mezoxy.mobilbayii
 
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.os.Bundle
+import com.mezoxy.mobilbayii.databinding.ActivityAdminPageBinding // View Binding sınıfınızı import edin
 
 class AdminPageActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityAdminPageBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_admin_page)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        // View Binding'i şişirin (inflate) ve içeriği ayarlayın
+        binding = ActivityAdminPageBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+
+        // Toolbar'ı AppBar olarak ayarlayın
+        setSupportActionBar(binding.toolbar)
+
+        // Geri düğmesini etkinleştirin
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true) // Geri simgesini göster
+            setDisplayShowTitleEnabled(false) // Toolbar'ın kendi başlığını gizle (TextView kullandığımız için)
         }
+
+        // Geri düğmesine tıklama olayını dinleyin
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed() // Geri navigasyonu tetikle
+        }
+
+        // Toolbar başlığını TextView üzerinden ayarlayın (XML'de zaten "AdminPage" olarak ayarlandı)
+        // binding.toolbarTitle.text = "AdminPage" // İsteğe bağlı: Kodu kullanarak başlığı ayarlamak isterseniz
+
+        // Buraya admin sayfasının diğer başlatma kodlarını ekleyebilirsiniz
+
+
     }
 }
