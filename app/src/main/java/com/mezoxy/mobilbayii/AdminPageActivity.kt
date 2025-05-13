@@ -1,7 +1,9 @@
 package com.mezoxy.mobilbayii
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.mezoxy.mobilbayii.databinding.ActivityAdminPageBinding // View Binding sınıfınızı import edin
 
 class AdminPageActivity : AppCompatActivity() {
@@ -36,6 +38,20 @@ class AdminPageActivity : AppCompatActivity() {
 
         // Buraya admin sayfasının diğer başlatma kodlarını ekleyebilirsiniz
 
+
+    }
+    fun goToUserProperties(view: View){
+        val intent = Intent(this@AdminPageActivity,UserPropertiesActivity::class.java)
+        startActivity(intent)
+
+    }
+    fun goToInventory(view: View){
+
+    }
+    fun goToOrders(view: View){
+
+    }
+    fun goToDemands(view: View?){
 
     }
 }
