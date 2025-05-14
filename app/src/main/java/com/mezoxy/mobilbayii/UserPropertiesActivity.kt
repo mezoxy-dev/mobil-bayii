@@ -15,17 +15,17 @@ class UserPropertiesActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-          // setSupportActionBar(binding.userPropertiesToolbar)
+           setSupportActionBar(binding.userPropertiesToolbar)
 
-//        //geri düğmesini etkinleştirin
-//        supportActionBar?.apply {
-//            setDisplayHomeAsUpEnabled(true) // Geri simgesini göster
-//            setDisplayShowTitleEnabled(false) // Toolbar'ın kendi başlığını gizle (TextView kullandığımız için)
-//        }
-//        // Geri düğmesine tıklama olayını dinleyin
-//        binding.userPropertiesToolbar.setNavigationOnClickListener {
-//            onBackPressedDispatcher.onBackPressed() // Geri navigasyonu tetikle
-//        }
+        //geri düğmesini etkinleştirin
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true) // Geri simgesini göster
+            setDisplayShowTitleEnabled(false) // Toolbar'ın kendi başlığını gizle (TextView kullandığımız için)
+        }
+        // Geri düğmesine tıklama olayını dinleyin
+        binding.userPropertiesToolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed() // Geri navigasyonu tetikle
+        }
 
     }
 
