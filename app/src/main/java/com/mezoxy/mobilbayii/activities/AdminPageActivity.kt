@@ -1,4 +1,4 @@
-package com.mezoxy.mobilbayii
+package com.mezoxy.mobilbayii.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -41,7 +41,7 @@ class AdminPageActivity : AppCompatActivity() {
 
     }
     fun goToUserProperties(view: View){
-        val intent = Intent(this@AdminPageActivity,UserPropertiesActivity::class.java)
+        val intent = Intent(this@AdminPageActivity, UserPropertiesActivity::class.java)
         startActivity(intent)
 
     }

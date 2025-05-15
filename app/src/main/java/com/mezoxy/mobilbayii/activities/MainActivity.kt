@@ -1,10 +1,7 @@
-package com.mezoxy.mobilbayii
+package com.mezoxy.mobilbayii.activities
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.mezoxy.mobilbayii.databinding.ActivityMainBinding
 
 private lateinit var binding: ActivityMainBinding
