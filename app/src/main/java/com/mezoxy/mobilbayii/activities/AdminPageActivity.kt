@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import com.mezoxy.mobilbayii.databinding.ActivityAdminPageBinding // View Binding sınıfınızı import edin
 
 class AdminPageActivity : AppCompatActivity() {
@@ -46,12 +47,16 @@ class AdminPageActivity : AppCompatActivity() {
 
     }
     fun goToInventory(view: View){
-
+        val intent = Intent(this@AdminPageActivity,StockActivity::class.java)
+        startActivity(intent)
     }
     fun goToOrders(view: View){
+        val intent = Intent(this@AdminPageActivity,OrdersActivity::class.java)
+        startActivity(intent)
 
     }
     fun goToDemands(view: View?){
-
+        val intent = Intent(this@AdminPageActivity,OrderConfirmationActivity::class.java)
+        startActivity(intent)
     }
 }
