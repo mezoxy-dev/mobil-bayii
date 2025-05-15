@@ -1,19 +1,20 @@
 package com.mezoxy.mobilbayii
 
+import adapters.UrunAdapter
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.mezoxy.mobilbayii.databinding.ActivityMainBinding
-import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import dataClasses.Urun
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var sepetListesi: MutableList<Urun>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,8 +23,55 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         registerActionBar(R.id.my_tool_bar)
+        initAndFillRecyclerView()
+        initSpetegitButtun(sepetListesi)
 
 
+    }
+
+    private fun initSearchBar(adapter: UrunAdapter) {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filter(newText ?: "")
+                return true
+            }
+        })
+    }
+
+    private fun initRadioButtons(adapter: UrunAdapter) {
+        binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.radio_asc -> adapter.sort(true)   // A-Z
+                R.id.radio_desc -> adapter.sort(false) // Z-A
+            }
+        }
+    }
+
+    private fun initAndFillRecyclerView()
+    {
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        sepetListesi = mutableListOf<Urun>()
+
+        var urunList = listOf(
+            Urun(R.drawable.phone1, "iPhone 13", "Apple", "128GB, 4GB RAM", true),
+            Urun(R.drawable.phone1, "Galaxy S21", "Samsung", "256GB, 8GB RAM", false),
+            Urun(R.drawable.phone1, "Redmi Note 12", "Xiaomi", "128GB, 6GB RAM", true)
+        )
+
+        val urunAdapter = UrunAdapter(urunList, sepetListesi)
+        binding.recyclerView.adapter = urunAdapter
+        initSearchBar(urunAdapter)
+        initRadioButtons(urunAdapter)
+    }
+
+    private fun initSpetegitButtun(sepetListesi: MutableList<Urun>)
+    {
+        binding.sepetButton.setOnClickListener {
+            val intent = Intent(this, SepetActivity::class.java)
+            intent.putExtra("sepet", ArrayList(sepetListesi)) // MutableList → ArrayList
+            startActivity(intent)
+        }
     }
 
     private fun registerActionBar(myActionBarId: Int)
