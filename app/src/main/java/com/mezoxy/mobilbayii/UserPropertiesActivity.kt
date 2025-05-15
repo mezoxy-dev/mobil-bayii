@@ -15,7 +15,7 @@ class UserPropertiesActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-           setSupportActionBar(binding.userPropertiesToolbar)
+        setSupportActionBar(binding.userPropertiesToolbar)
 
         //geri düğmesini etkinleştirin
         supportActionBar?.apply {
