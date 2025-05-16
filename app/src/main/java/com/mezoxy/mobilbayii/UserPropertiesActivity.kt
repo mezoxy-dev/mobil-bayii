@@ -1,4 +1,4 @@
-package com.mezoxy.mobilbayii.activities
+package com.mezoxy.mobilbayii
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

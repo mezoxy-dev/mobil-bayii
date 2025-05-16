@@ -3,6 +3,9 @@ package com.mezoxy.mobilbayii
 import adapters.UrunAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.mezoxy.mobilbayii.databinding.ActivityMainBinding
@@ -25,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         registerActionBar(R.id.my_tool_bar)
         initAndFillRecyclerView()
         initSpetegitButtun(sepetListesi)
-
 
     }
 

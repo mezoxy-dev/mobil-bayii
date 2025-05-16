@@ -42,11 +42,15 @@
         <!-- Sepet butonu -->
         <ImageButton
             android:id="@+id/sepet_button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:backgroundTint="#B7C512"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
             android:contentDescription="s_b"
             android:elevation="9dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_shopping_cart"
             app:layout_constraintBottom_toBottomOf="@+id/my_tool_bar"
             app:layout_constraintEnd_toEndOf="parent" />
 
