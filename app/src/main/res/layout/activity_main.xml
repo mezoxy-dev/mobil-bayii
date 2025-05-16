@@ -6,19 +6,20 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity">
+    tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/ActionBar"
+        android:id="@+id/MainActionBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <!-- Toolbar başlığı -->
         <TextView
-            android:id="@+id/toolbarTitle"
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
             android:elevation="9dp"
             android:text="MobilBayii"
             android:textColor="@android:color/white"
@@ -59,7 +60,11 @@
             android:id="@+id/hamburger_button"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:backgroundTint="#34FF03"
+            android:background="@android:color/transparent"
+            android:src="@drawable/hamburger_button_ic"
+            android:scaleType="centerCrop"
+            android:scaleX="0.75"
+            android:scaleY="0.75"
             android:contentDescription="s_b"
             android:elevation="9dp"
             app:layout_constraintBottom_toBottomOf="@+id/my_tool_bar"
@@ -71,9 +76,11 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/recycler_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbarTitle">
+            app:layout_constraintTop_toBottomOf="@+id/my_tool_bar">
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_view"
@@ -81,15 +88,13 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="12dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:queryHint="Ürün ara..."
                 android:background="@android:drawable/editbox_background"
                 android:elevation="2dp"
-                app:layout_constraintTop_toTopOf="parent"
+                android:queryHint="Ürün ara..."
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/radio_group"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/radio_group" />
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <!-- Sıralama RadioGroup -->

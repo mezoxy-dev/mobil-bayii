@@ -3,9 +3,6 @@ package com.mezoxy.mobilbayii
 import adapters.UrunAdapter
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.mezoxy.mobilbayii.databinding.ActivityMainBinding
@@ -26,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         registerActionBar(R.id.my_tool_bar)
+        sepetListesi = mutableListOf<Urun>()
         initAndFillRecyclerView()
         initSpetegitButtun(sepetListesi)
 
@@ -53,15 +51,14 @@ class MainActivity : AppCompatActivity() {
     private fun initAndFillRecyclerView()
     {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        sepetListesi = mutableListOf<Urun>()
 
         var urunList = listOf(
-            Urun(R.drawable.phone1, "iPhone 13", "Apple", "128GB, 4GB RAM", true),
-            Urun(R.drawable.phone1, "Galaxy S21", "Samsung", "256GB, 8GB RAM", false),
-            Urun(R.drawable.phone1, "Redmi Note 12", "Xiaomi", "128GB, 6GB RAM", true)
+            Urun(R.drawable.phone1, "iPhone 13", "Apple", 7999.99, "128GB, 4GB RAM", true),
+            Urun(R.drawable.phone1, "Galaxy S21", "Samsung", 11999.99, "256GB, 8GB RAM", false),
+            Urun(R.drawable.phone1, "Redmi Note 12", "Xiaomi", 9999.99, "128GB, 6GB RAM", true)
         )
 
-        val urunAdapter = UrunAdapter(urunList, sepetListesi)
+        val urunAdapter = UrunAdapter(urunList)
         binding.recyclerView.adapter = urunAdapter
         initSearchBar(urunAdapter)
         initRadioButtons(urunAdapter)
@@ -71,7 +68,6 @@ class MainActivity : AppCompatActivity() {
     {
         binding.sepetButton.setOnClickListener {
             val intent = Intent(this, SepetActivity::class.java)
-            intent.putExtra("sepet", ArrayList(sepetListesi)) // MutableList → ArrayList
             startActivity(intent)
         }
     }
@@ -83,19 +79,28 @@ class MainActivity : AppCompatActivity() {
         if (actionBar != null)
         {
             actionBar.setDisplayShowTitleEnabled(false)
-            binding.sepetButton.setOnClickListener {sepet_button_func()}
-            binding.hamburgerButton.setOnClickListener {hamburger_button_func()}
-            //TODO: istenen button işlevleri, kayarak açılan menü vs.
         }
+        setupNavigationView()
     }
 
-    public fun sepet_button_func()
-    {
-        Toast.makeText(this, "func1", Toast.LENGTH_SHORT).show()
-    }
+    //Açılır çekmece pencere Butonlarına işlev verme
+    private fun setupNavigationView() {
+        binding.hamburgerButton.setOnClickListener {binding.drawerLayout.openDrawer(GravityCompat.START)}
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
 
-    public fun hamburger_button_func()
-    {
-        binding.drawerLayout.openDrawer(GravityCompat.START)
+                R.id.nav_admin_page -> {
+                    val intent = Intent(this, AdminPageActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+            }
+            false
+        }
     }
 }

@@ -17,7 +17,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="100dp"
-            android:layout_height="100dp" >
+            android:layout_height="100dp">
 
             <ImageView
                 android:id="@+id/image_phone"
@@ -64,6 +64,18 @@
                 android:text="Stok: Var"
                 android:textColor="#4CAF50" />
 
+            <!-- 💰 Fiyat -->
+            <TextView
+                android:id="@+id/text_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₺7.999,00"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="4dp" />
+
+            <!-- Sepete Ekle Butonu -->
             <Button
                 android:id="@+id/button_add_to_cart"
                 android:layout_width="wrap_content"

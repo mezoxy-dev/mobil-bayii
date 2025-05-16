@@ -9,9 +9,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.mezoxy.mobilbayii.R
+import com.mezoxy.mobilbayii.SepetManager
 import dataClasses.Urun
 
-class UrunAdapter(private var urunList: List<Urun>, private val sepetListesi: MutableList<Urun>) : RecyclerView.Adapter<UrunAdapter.UrunViewHolder>() {
+class UrunAdapter(private var urunList: List<Urun>) : RecyclerView.Adapter<UrunAdapter.UrunViewHolder>() {
 
     private var fullUrunList: List<Urun> = urunList.toList()
     private var filteredUrunList: List<Urun> = urunList.toList()
@@ -19,6 +20,7 @@ class UrunAdapter(private var urunList: List<Urun>, private val sepetListesi: Mu
     private var isAscending: Boolean = true
 
     inner class UrunViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val fiyat: TextView = itemView.findViewById(R.id.text_price)
         val resim: ImageView = itemView.findViewById(R.id.image_phone)
         val ad: TextView = itemView.findViewById(R.id.text_name)
         val marka: TextView = itemView.findViewById(R.id.text_brand)
@@ -39,10 +41,11 @@ class UrunAdapter(private var urunList: List<Urun>, private val sepetListesi: Mu
         holder.ad.text = urun.ad
         holder.marka.text = urun.marka
         holder.ozellikler.text = urun.ozellikler
+        holder.fiyat.text = urun.fiyat.toString()
 
         holder.sepeteEkleBtn.setOnClickListener {
-            if (!sepetListesi.contains(urun)) {
-                sepetListesi.add(urun)
+            if (!SepetManager.sepetList.contains(urun)) {
+                SepetManager.sepetList.add(urun)
                 Toast.makeText(holder.itemView.context, "${urun.ad} sepete eklendi", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(holder.itemView.context, "${urun.ad} zaten sepette", Toast.LENGTH_SHORT).show()
