@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Search Bar -->
+    <item
+        android:id="@+id/action_search_orders"
+        android:title="Ara"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" /> <!-- Burası tamamlandı -->
+
+    <!-- Stok Ekle Tuşu -->
+    <item
+        android:id="@+id/action_add_stock"
+        android:title="Stok Ekle"
+        android:icon="@android:drawable/ic_input_add"
+        app:showAsAction="ifRoom" />
+
+    <!-- Stok Çıkar Tuşu -->
+    <item
+        android:id="@+id/action_remove_stock"
+        android:title="Stok Çıkar"
+        android:icon="@android:drawable/ic_delete"
+        app:showAsAction="ifRoom" />
+
+</menu>
