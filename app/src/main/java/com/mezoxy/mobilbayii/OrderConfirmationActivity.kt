@@ -1,10 +1,12 @@
 package com.mezoxy.mobilbayii
 
+import adapters.UrunAdapter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mezoxy.mobilbayii.databinding.ActivityOrderConfirmationBinding
 
 class OrderConfirmationActivity : AppCompatActivity() {
@@ -77,14 +79,11 @@ class OrderConfirmationActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        // RecyclerView'ı layout manager ve adapter ile ayarla
-        // binding.recyclerViewOrders.layoutManager = LinearLayoutManager(this) // View Binding
-        // binding.recyclerViewOrders.adapter = OrderRequestAdapter(...) // View Binding
+    //RecyclerView'ı layout manager ve adapter ile ayarla
+    //     binding.recyclerViewOrders.layoutManager = LinearLayoutManager(this) // View Binding
+//         binding.recyclerViewOrders.adapter = UrunAdapter(urunList = listOf(), sepetListesi = mutableListOf()) // View Binding
 
-        // View Binding kullanmıyorsanız:
-        // recyclerViewOrders = findViewById(R.id.recyclerView_orders)
-        // recyclerViewOrders.layoutManager = LinearLayoutManager(this)
-        // recyclerViewOrders.adapter = OrderRequestAdapter(...) // OrderRequestAdapter sınıfını oluşturacaksınız
+
     }
 
     private fun loadOrderRequests() {
