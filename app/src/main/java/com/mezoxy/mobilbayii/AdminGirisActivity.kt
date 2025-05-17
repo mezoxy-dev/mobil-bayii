@@ -43,44 +43,21 @@ class AdminGirisActivity : AppCompatActivity() {
             }
 
             // Veritabanından admini kontrol et
-            val admin = dbHelper.getAdminByUsername(kullaniciAdi)
-
-            if (admin != null) {
-                // Kullanıcı bulundu, şimdi şifreyi kontrol et
-                // DİKKAT: Gerçek uygulamada şifreler hash'lenerek karşılaştırılmalıdır!
-                // Örnek: if (BCrypt.checkpw(parola, admin.sifre)) { ... }
-                if (admin.sifre == parola) {
-                    // Giriş başarılı
-                    Toast.makeText(this, "Giriş başarılı!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(
-                        this,
-                        AdminPageActivity::class.java
-                    ) // AdminPageActivity sınıf adınız
-                    // İsteğe bağlı: Admin bilgilerini veya bir bayrağı AdminPageActivity'ye gönderebilirsiniz
-                    // intent.putExtra("ADMIN_USERNAME", admin.kullaniciAdi)
-                    startActivity(intent)
-                    finish() // Giriş yapıldıktan sonra bu aktiviteyi kapat
-                } else {
-                    // Şifre yanlış
-                    Toast.makeText(this, "Şifre yanlış. Lütfen tekrar deneyin.", Toast.LENGTH_LONG)
-                        .show()
-                }
-            } else {
-                // Kullanıcı bulunamadı
-                Toast.makeText(
-                    this,
-                    "Kullanıcı adı bulunamadı. Lütfen doğru girin.",
-                    Toast.LENGTH_LONG
-                ).show()
-
-
+            if (dbHelper.foundAdminByUsername(kullaniciAdi, parola))
+            {
+                val intent = Intent(this@AdminGirisActivity, AdminPageActivity::class.java)
+                startActivity(intent)
+                finish()
             }
+            else
+                Toast.makeText(this, "Hatalı kullanıcı adı veya şifre!", Toast.LENGTH_SHORT).show()
         }
     }
 
     fun goToAdminPage(view: View) {
         val intent = Intent(this@AdminGirisActivity, AdminPageActivity::class.java)
         startActivity(intent)
+        finish()
     }
 }
 

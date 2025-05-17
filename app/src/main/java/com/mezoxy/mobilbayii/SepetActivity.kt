@@ -26,7 +26,9 @@ class SepetActivity : AppCompatActivity() {
         val sepetList = SepetManager.sepetList
 
         setupNavigationView()
+    }
 
+    private fun setupRecyclerView(sepetList: MutableList<Urun>) {
         adapter = SepetAdapter(sepetList) { removedItem ->
             updateTotalPrice(sepetList)
             if (sepetList.isEmpty()) {

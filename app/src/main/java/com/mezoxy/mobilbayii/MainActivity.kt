@@ -3,7 +3,6 @@ package com.mezoxy.mobilbayii
 import adapters.UrunAdapter
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.mezoxy.mobilbayii.databinding.ActivityMainBinding
 import androidx.appcompat.widget.SearchView
@@ -15,6 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var sepetListesi: MutableList<Urun>
+    private lateinit var myDatabaseHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +26,16 @@ class MainActivity : AppCompatActivity() {
         sepetListesi = mutableListOf<Urun>()
         initAndFillRecyclerView()
         initSpetegitButtun(sepetListesi)
+
+        initDataBase()
+
+    }
+
+    private fun initDataBase()
+    {
+        myDatabaseHelper = DatabaseHelper(this)
+        myDatabaseHelper.addAdmin("admin", "admin")
+        //myDatabaseHelper.addSampleProductsAndStocks()
 
     }
 
@@ -95,7 +105,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_admin_page -> {
-                    val intent = Intent(this, AdminPageActivity::class.java)
+                    val intent = Intent(this, AdminGirisActivity::class.java)
                     startActivity(intent)
                     true
                 }
