@@ -4,6 +4,17 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
-
+    <style name="ToolbarTitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <!-- Metin boyutu -->
+        <item name="android:textSize">24sp</item>
+        <!-- Metin stili (kalın, italik) -->
+        <item name="android:textStyle">bold</item>
+        <!-- Metin rengi (isteğe bağlı, app:titleTextColor ile de ayarlanabilir) -->
+        <!-- <item name="android:textColor">@android:color/white</item> -->
+        <!-- Font ailesi (Android 4.1+ için) -->
+        <!-- <item name="android:fontFamily">sans-serif-medium</item> -->
+        <!-- Özel font kullanmak isterseniz (Android 8.0+ veya Support Library ile) -->
+        <!-- <item name="fontFamily">@font/your_custom_font</item> -->
+    </style>
     <style name="Theme.MobilBayii" parent="Base.Theme.MobilBayii" />
 </resources>

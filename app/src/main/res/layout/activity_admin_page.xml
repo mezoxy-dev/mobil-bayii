@@ -13,24 +13,17 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/facebook_blue"
-        android:elevation="4dp"
+        android:elevation="5dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="@android:color/white">
+        app:title="Admin Sayfası"
+        app:titleMarginStart="50dp"
+        app:titleTextAppearance="@style/ToolbarTitleText"
+        app:titleTextColor="@android:color/white"
+        >
 
-        <TextView
-            android:id="@+id/toolbarTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="70dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="130dp"
-            android:layout_marginBottom="10dp"
-            android:text="Admin Page"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+
+
 
     </androidx.appcompat.widget.Toolbar>
 

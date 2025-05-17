@@ -25,7 +25,7 @@ class AdminPageActivity : AppCompatActivity() {
         // Geri düğmesini etkinleştirin
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true) // Geri simgesini göster
-            setDisplayShowTitleEnabled(false) // Toolbar'ın kendi başlığını gizle (TextView kullandığımız için)
+            setDisplayShowTitleEnabled(true) // Toolbar'ın kendi başlığını gizle (TextView kullandığımız için)
         }
 
         // Geri düğmesine tıklama olayını dinleyin
