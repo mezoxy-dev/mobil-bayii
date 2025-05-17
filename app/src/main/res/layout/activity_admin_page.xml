@@ -17,14 +17,8 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="Admin Sayfası"
-        app:titleMarginStart="50dp"
         app:titleTextAppearance="@style/ToolbarTitleText"
-        app:titleTextColor="@android:color/white"
-        >
-
-
-
-
+        app:titleTextColor="@android:color/white">
     </androidx.appcompat.widget.Toolbar>
 
     <!-- Ekranın Geri Kalan İçeriği -->

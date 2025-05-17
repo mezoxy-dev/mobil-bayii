@@ -84,8 +84,27 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         // Bu tablo için ayrı bir ID sütunu eklemek daha iyi olabilir:
         const val COLUMN_REQUEST_ITEM_ID = "request_item_id"
 
-        //Views
+        // Views
         const val VIEW_PRODUCTS_WITH_STOCK = "view_products_with_stock"
+
+        // Sorgu hızını arttırmak için Index Tanımlamaları
+        //-- (CREATE_INDEX_PRODUCT_BRAND) Marka bazlı aramalarda hız
+        //-- (CREATE_INDEX_PRODUCT_MODEL) Model bazlı sorgularda hız
+        //-- (CREATE_INDEX_PRODUCT_NAME) Ad bazlı arama (search bar için faydalı)
+        //-- (CREATE_INDEX_STOCK_PRODUCT_ID) Stok tablosundaki product_id için index (JOIN işlemleri için)
+
+        private const val CREATE_INDEX_PRODUCT_BRAND =
+            "CREATE INDEX IF NOT EXISTS idx_product_brand ON $TABLE_PRODUCTS($COLUMN_PRODUCT_BRAND);"
+
+        private const val CREATE_INDEX_PRODUCT_MODEL =
+            "CREATE INDEX IF NOT EXISTS idx_product_model ON $TABLE_PRODUCTS($COLUMN_PRODUCT_MODEL);"
+
+        private const val CREATE_INDEX_PRODUCT_NAME =
+            "CREATE INDEX IF NOT EXISTS idx_product_name ON $TABLE_PRODUCTS($COLUMN_PRODUCT_NAME);"
+
+        private const val CREATE_INDEX_STOCK_PRODUCT_ID =
+            "CREATE INDEX IF NOT EXISTS idx_stock_product_id ON $TABLE_STOCKS($COLUMN_PRODUCT_ID);"
+
 
 
         // CREATE TABLE İfadeleri
@@ -158,16 +177,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                     "SELECT " +
                     "p.$COLUMN_PRODUCT_ID, " +
                     "p.$COLUMN_PRODUCT_NAME, " +
-                    "p.$COLUMN_PRODUCT_BRAND, " +
-                    "p.$COLUMN_PRODUCT_MODEL, " +
-                    "p.$COLUMN_PRODUCT_PRICE, " +
-                    "p.$COLUMN_PRODUCT_DESCRIPTION, " +
-                    "p.$COLUMN_PRODUCT_CREATED_AT, " +
-                    "p.$COLUMN_PRODUCT_UPDATED_AT, " +
-                    "s.$COLUMN_STOCK_QUANTITY AS stock_quantity " +
+                    "s.$COLUMN_STOCK_QUANTITY, " +
+                    "pi.$COLUMN_IMAGE_URL " +
                     "FROM $TABLE_PRODUCTS p " +
-                    "LEFT JOIN $TABLE_STOCKS s ON p.$COLUMN_PRODUCT_ID = s.$COLUMN_PRODUCT_ID"
-
+                    "LEFT JOIN $TABLE_STOCKS s ON p.$COLUMN_PRODUCT_ID = s.$COLUMN_PRODUCT_ID " +
+                    "LEFT JOIN $TABLE_PRODUCT_IMAGES pi ON p.$COLUMN_PRODUCT_ID = pi.$COLUMN_PRODUCT_ID"
 
     }
 
@@ -175,7 +189,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         // Yabancı anahtar kısıtlamalarını etkinleştir
         db?.execSQL("PRAGMA foreign_keys=ON;")
 
-        // Tabloları oluştur
+        // Tabloları oluşturma
         db?.execSQL(CREATE_TABLE_ADMIN)
         db?.execSQL(CREATE_TABLE_CUSTOMERS)
         db?.execSQL(CREATE_TABLE_REQUESTS)
@@ -184,11 +198,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db?.execSQL(CREATE_TABLE_PRODUCT_IMAGES)
         db?.execSQL(CREATE_TABLE_STOCKS)
         db?.execSQL(CREATE_TABLE_REQUEST_ITEMS)
+
+        // View oluşturma
         db?.execSQL(CREATE_VIEW_PRODUCTS_WITH_STOCK)
 
-        // İsteğe bağlı: Başlangıç verileri ekleyebilirsiniz (örneğin, varsayılan bir admin)
-        //addInitialAdmin(db)
-        //addSampleProductsAndStocks(db) // Örnek ürün ve stok eklemek için
+        // İndeksleri oluşturma
+        db?.execSQL(CREATE_INDEX_PRODUCT_BRAND)
+        db?.execSQL(CREATE_INDEX_PRODUCT_MODEL)
+        db?.execSQL(CREATE_INDEX_PRODUCT_NAME)
+        db?.execSQL(CREATE_INDEX_STOCK_PRODUCT_ID)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -271,20 +289,64 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return null
     }
 
+    fun getAllProducts(): List<Urun> {
+        val urunList = mutableListOf<Urun>()
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_PRODUCTS", null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PRODUCT_ID))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PRODUCT_NAME))
+                val brand = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PRODUCT_BRAND))
+                val price = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_PRODUCT_PRICE))
+                val description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PRODUCT_DESCRIPTION))
+
+                // Şimdilik sabit görsel ve stok kontrolü
+                val imageRes = R.drawable.phone1
+                val inStock = true
+
+                urunList.add(Urun(id, imageRes, name, brand, price, description, inStock))
+
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return urunList
+    }
+
+
     fun addSampleProductsAndStocks() {
         val db = this.writableDatabase
 
         try {
             // Ürünler
-            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('Akıllı Telefon', 'Samsung', 'Galaxy S21', 14999.99, 'Amiral gemisi Samsung telefonu.');")
-            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('Akıllı Telefon', 'Apple', 'iPhone 14 Pro', 45999.99, 'Apple''ın son çıkan üst düzey telefonu.');")
-            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('Akıllı Telefon', 'Xiaomi', 'Mi 12 Lite', 10999.99, 'Fiyat/performans odaklı akıllı telefon.');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('Samsung Galaxy S21', 'Samsung', 'Galaxy S21', 14999.99, 'Amiral gemisi Samsung telefonu.');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('iPhone 14 Pro', 'Apple', 'iPhone 14 Pro', 45999.99, 'Apple''ın son çıkan üst düzey telefonu.');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('Xiaomi Mi 12 Lite', 'Xiaomi', 'Mi 12 Lite', 10999.99, 'Fiyat/performans odaklı akıllı telefon.');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('OnePlus 11', 'OnePlus', '11', 17999.99, 'Yüksek performanslı amiral gemisi telefon.');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('Google Pixel 7', 'Google', 'Pixel 7', 16999.99, 'Google kamerasıyla öne çıkan telefon.');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('Huawei P40 Pro', 'Huawei', 'P40 Pro', 13999.99, 'Google servisleri olmayan ama güçlü bir cihaz.');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('Realme GT Neo 3', 'Realme', 'GT Neo 3', 9999.99, 'Fiyat/performans canavarı.');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('Motorola Edge 30', 'Motorola', 'Edge 30', 8999.99, 'İnce tasarım ve saf Android deneyimi.');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('Nokia G50', 'Nokia', 'G50', 6499.99, 'Dayanıklı ve uygun fiyatlı telefon.');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCTS ($COLUMN_PRODUCT_NAME, $COLUMN_PRODUCT_BRAND, $COLUMN_PRODUCT_MODEL, $COLUMN_PRODUCT_PRICE, $COLUMN_PRODUCT_DESCRIPTION) VALUES ('Asus ROG Phone 6', 'Asus', 'ROG Phone 6', 24999.99, 'Oyuncular için özel olarak tasarlandı.');")
 
             // Stoklar
-            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (15, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_NAME = 'Akıllı Telefon' AND $COLUMN_PRODUCT_BRAND = 'Samsung' AND $COLUMN_PRODUCT_MODEL = 'Galaxy S21' LIMIT 1));")
-            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (8, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_NAME = 'Akıllı Telefon' AND $COLUMN_PRODUCT_BRAND = 'Apple' AND $COLUMN_PRODUCT_MODEL = 'iPhone 14 Pro' LIMIT 1));")
-            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (20, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_NAME = 'Akıllı Telefon' AND $COLUMN_PRODUCT_BRAND = 'Xiaomi' AND $COLUMN_PRODUCT_MODEL = 'Mi 12 Lite' LIMIT 1));")
-        } catch (e: Exception) { Log.d("SQL_ERROR", e.toString()) }
+            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (15, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'Galaxy S21' LIMIT 1));")
+            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (8, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'iPhone 14 Pro' LIMIT 1));")
+            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (20, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'Mi 12 Lite' LIMIT 1));")
+            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (10, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = '11' LIMIT 1));")
+            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (12, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'Pixel 7' LIMIT 1));")
+            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (5, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'P40 Pro' LIMIT 1));")
+            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (18, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'GT Neo 3' LIMIT 1));")
+            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (9, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'Edge 30' LIMIT 1));")
+            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (14, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'G50' LIMIT 1));")
+            db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (7, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'ROG Phone 6' LIMIT 1));")
+        } catch (e: Exception) {
+            Log.d("SQL_ERROR", e.toString())
+        }
     }
+
 
 }

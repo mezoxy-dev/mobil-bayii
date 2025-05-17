@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mezoxy.mobilbayii.databinding.ActivitySepetBinding
 import dataClasses.Urun
 
-private lateinit var binding: ActivitySepetBinding
-private lateinit var adapter: SepetAdapter
-
 class SepetActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySepetBinding
+    private lateinit var adapter: SepetAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySepetBinding.inflate(layoutInflater)
@@ -24,7 +24,7 @@ class SepetActivity : AppCompatActivity() {
 
         val intent = intent
         val sepetList = SepetManager.sepetList
-
+        setupRecyclerView(sepetList)
         setupNavigationView()
     }
 

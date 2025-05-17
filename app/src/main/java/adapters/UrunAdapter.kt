@@ -66,10 +66,16 @@ class UrunAdapter(private var urunList: List<Urun>) : RecyclerView.Adapter<UrunA
     }
 
     private fun applyFilterAndSort() {
-        filteredUrunList = fullUrunList.filter {
-            it.ad.contains(currentQuery, ignoreCase = true) ||
-                    it.marka.contains(currentQuery, ignoreCase = true)
-        }.sortedWith(compareBy { it.ad.lowercase() })
+        filteredUrunList = fullUrunList
+            .filter {
+                it.ad.contains(currentQuery, ignoreCase = true) ||
+                        it.marka.contains(currentQuery, ignoreCase = true)
+            }
+            .sortedWith(compareBy {
+                val name = it.ad.lowercase()
+                val index = name.indexOf(currentQuery.lowercase())
+                if (index >= 0) index else Int.MAX_VALUE // "One" en başta geçenler öne alınır
+            })
 
         if (!isAscending) {
             filteredUrunList = filteredUrunList.reversed()
@@ -77,6 +83,7 @@ class UrunAdapter(private var urunList: List<Urun>) : RecyclerView.Adapter<UrunA
 
         notifyDataSetChanged()
     }
+
 
 
 

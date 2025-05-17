@@ -13,7 +13,6 @@ import dataClasses.Urun
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var sepetListesi: MutableList<Urun>
     private lateinit var myDatabaseHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,13 +21,10 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        registerActionBar(R.id.my_tool_bar)
-        sepetListesi = mutableListOf<Urun>()
-        initAndFillRecyclerView()
-        initSpetegitButtun(sepetListesi)
-
         initDataBase()
-
+        registerActionBar(R.id.my_tool_bar)
+        initAndFillRecyclerView()
+        initSpetegitButtun()
     }
 
     private fun initDataBase()
@@ -36,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         myDatabaseHelper = DatabaseHelper(this)
         myDatabaseHelper.addAdmin("admin", "admin")
         //myDatabaseHelper.addSampleProductsAndStocks()
-
     }
 
     private fun initSearchBar(adapter: UrunAdapter) {
@@ -58,23 +53,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initAndFillRecyclerView()
-    {
+    private fun initAndFillRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        var urunList = listOf(
-            Urun(R.drawable.phone1, "iPhone 13", "Apple", 7999.99, "128GB, 4GB RAM", true),
-            Urun(R.drawable.phone1, "Galaxy S21", "Samsung", 11999.99, "256GB, 8GB RAM", false),
-            Urun(R.drawable.phone1, "Redmi Note 12", "Xiaomi", 9999.99, "128GB, 6GB RAM", true)
-        )
+        // Veritabanından ürünleri çek
+        val urunList = myDatabaseHelper.getAllProducts()
 
+        // Adapter’i oluştur
         val urunAdapter = UrunAdapter(urunList)
         binding.recyclerView.adapter = urunAdapter
+
+        // Arama ve sıralama filtrelerini başlat
         initSearchBar(urunAdapter)
         initRadioButtons(urunAdapter)
     }
 
-    private fun initSpetegitButtun(sepetListesi: MutableList<Urun>)
+
+    private fun initSpetegitButtun()
     {
         binding.sepetButton.setOnClickListener {
             val intent = Intent(this, SepetActivity::class.java)
@@ -100,6 +95,13 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_home -> {
                     val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+
+                R.id.nav_sepet_page -> {
+                    val intent = Intent(this, SepetActivity::class.java)
                     startActivity(intent)
                     true
                 }

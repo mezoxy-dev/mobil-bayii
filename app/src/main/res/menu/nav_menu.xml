@@ -5,6 +5,10 @@
         android:title="Ana Sayfa"
         android:icon="@android:drawable/ic_menu_view" />
     <item
+        android:id="@+id/nav_sepet_page"
+        android:title="Sepet"
+        android:icon="@drawable/ic_shopping_cart" />
+    <item
         android:id="@+id/nav_admin_page"
         android:title="Admin Giriş"
         android:icon="@android:drawable/ic_lock_lock" />

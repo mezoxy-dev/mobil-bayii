@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.semantics.text
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.mezoxy.mobilbayii.databinding.ActivityAdminGirisBinding
@@ -25,13 +26,9 @@ class AdminGirisActivity : AppCompatActivity() {
 
         // Toolbar'ı AppBar olarak ayarlayın
         setSupportActionBar(binding.toolbarAdminGirisSayfasi)
-        supportActionBar?.title = "Admin Girişi"
+        registerActionBar(R.id.toolbarAdminGirisSayfasi)
 
-        // Geri düğmesini etkinleştirin
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true) // Geri simgesini göster
-            setDisplayShowTitleEnabled(true) // Toolbar'ın kendi başlığını gizle (TextView kullandığımız için)
-        }
+
         binding.adminGirisButton.setOnClickListener {
             val kullaniciAdi = binding.editTextKullaniciAdi.text.toString().trim()
             val parola = binding.editTextParola.text.toString().trim()
@@ -51,6 +48,44 @@ class AdminGirisActivity : AppCompatActivity() {
             }
             else
                 Toast.makeText(this, "Hatalı kullanıcı adı veya şifre!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun registerActionBar(myActionBarId: Int)
+    {
+        setSupportActionBar(findViewById(myActionBarId))
+        val actionBar = supportActionBar
+        if (actionBar != null)
+        {
+            actionBar.setDisplayShowTitleEnabled(false)
+        }
+        setupNavigationView()
+    }
+
+    private fun setupNavigationView() {
+        binding.hamburgerButton.setOnClickListener {binding.drawerLayout.openDrawer(GravityCompat.START)}
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+
+                R.id.nav_sepet_page -> {
+                    val intent = Intent(this, SepetActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                R.id.nav_admin_page -> {
+                    val intent = Intent(this, AdminGirisActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+            }
+            false
         }
     }
 

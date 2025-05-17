@@ -1,80 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AdminGirisActivity">
 
-    <!-- AppBar (Toolbar) -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarAdminGirisSayfasi"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/facebook_blue"
-        android:elevation="5dp"
-        android:gravity="center_horizontal"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="match_parent"
+        tools:context=".AdminGirisActivity">
 
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="Giriş Sayfası"
-        app:titleMarginStart="50dp"
-        app:titleTextAppearance="@style/ToolbarTitleText"
-        app:titleTextColor="@android:color/white">
+        <!-- AppBar (Toolbar) -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarAdminGirisSayfasi"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/facebook_blue"
+            android:elevation="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </androidx.appcompat.widget.Toolbar>
 
-    </androidx.appcompat.widget.Toolbar>
+        <!-- Toolbar başlığı -->
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
-        android:layout_marginTop="100dp"
-        android:src="@drawable/baseline_account_circle_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarAdminGirisSayfasi">
+        <!-- Hamburger butonu -->
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:elevation="9dp"
+            android:text="Admin Giriş"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toBottomOf="@+id/toolbarAdminGirisSayfasi"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    </ImageView>
+        <ImageButton
+            android:id="@+id/hamburger_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="s_b"
+            android:elevation="9dp"
+            android:scaleType="centerCrop"
+            android:scaleX="0.75"
+            android:scaleY="0.75"
+            android:src="@drawable/hamburger_button_ic"
+            app:layout_constraintBottom_toBottomOf="@+id/toolbarAdminGirisSayfasi"
+            app:layout_constraintStart_toStartOf="@+id/toolbarAdminGirisSayfasi" />
 
-    <Button
-        android:id="@+id/adminGirisButton"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:onClick="goToAdminPage"
-        android:text="Giriş Yap"
-        android:textColorLink="@color/facebook_white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/editText_parola"
-        app:layout_constraintStart_toStartOf="@+id/editText_parola"
-        app:layout_constraintTop_toBottomOf="@+id/editText_parola"
-        app:layout_constraintVertical_bias="0.159" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:layout_marginTop="80dp"
+            android:src="@drawable/baseline_account_circle_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarAdminGirisSayfasi">
 
-    <EditText
-        android:id="@+id/editText_parola"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
-        android:ems="10"
-        android:hint="Şifre"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/editText_kullaniciAdi"
-        app:layout_constraintStart_toStartOf="@+id/editText_kullaniciAdi"
-        app:layout_constraintTop_toBottomOf="@+id/editText_kullaniciAdi" />
+        </ImageView>
 
-    <EditText
-        android:id="@+id/editText_kullaniciAdi"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
-        android:ems="10"
-        android:hint="Kullanıcı Adı"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        <Button
+            android:id="@+id/adminGirisButton"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:onClick="goToAdminPage"
+            android:text="Giriş Yap"
+            android:textColorLink="@color/facebook_white"
+            app:layout_constraintEnd_toEndOf="@+id/editText_parola"
+            app:layout_constraintStart_toStartOf="@+id/editText_parola"
+            app:layout_constraintTop_toBottomOf="@+id/editText_parola" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <EditText
+            android:id="@+id/editText_parola"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:ems="10"
+            android:hint="Şifre"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="@+id/editText_kullaniciAdi"
+            app:layout_constraintStart_toStartOf="@+id/editText_kullaniciAdi"
+            app:layout_constraintTop_toBottomOf="@+id/editText_kullaniciAdi" />
+
+        <EditText
+            android:id="@+id/editText_kullaniciAdi"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:ems="10"
+            android:hint="Kullanıcı Adı"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- NavigationView -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/nav_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
