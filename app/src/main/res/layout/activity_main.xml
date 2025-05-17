@@ -58,8 +58,8 @@
         <!-- Hamburger butonu -->
         <ImageButton
             android:id="@+id/hamburger_button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@android:color/transparent"
             android:src="@drawable/hamburger_button_ic"
             android:scaleType="centerCrop"
