@@ -26,6 +26,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val TABLE_PRODUCT_IMAGES = "product_images"
         const val TABLE_STOCKS = "stocks"
         const val TABLE_REQUEST_ITEMS = "request_items"
+        const val TABLE_DELETED_LOG = "deleted_log"
+
+        // Silinenlerin logları tablosu Stünları
+        const val COLUMN_DELETED_LOG_ID = "log_id"
+        const val COLUMN_DELETED_LOG_DESCRIPTION = "description"
+        const val COLUMN_DELETED_LOG_CREATED_AT = "created_at"
 
         // Admin Tablosu Sütunları
         const val COLUMN_ADMIN_ID = "admin_id"
@@ -77,10 +83,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         // product_id -> COLUMN_PRODUCT_ID (FK)
 
         // Request Items Tablosu Sütunları
-        // requests_id -> COLUMN_REQUEST_ID (FK)
-        // product_id -> COLUMN_PRODUCT_ID (FK)
-        // price_at_purchase -> COLUMN_REQUEST_PRICE_AT_PURCHASE (veya ayrı bir ad)
-        // Bu tablo için ayrı bir ID sütunu eklemek daha iyi olabilir:
         const val COLUMN_REQUEST_ITEM_ID = "request_item_id"
 
         // Views
@@ -107,6 +109,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
 
         // CREATE TABLE İfadeleri
+        private const val CREATE_TABLE_DELETED_LOG = "CREATE TABLE $TABLE_DELETED_LOG (" +
+                "$COLUMN_DELETED_LOG_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "$COLUMN_DELETED_LOG_DESCRIPTION TEXT," +
+                "$COLUMN_DELETED_LOG_CREATED_AT TEXT DEFAULT (datetime('now', 'localtime')));"
+
         private const val CREATE_TABLE_ADMIN = "CREATE TABLE $TABLE_ADMIN (" +
                 "$COLUMN_ADMIN_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "$COLUMN_ADMIN_USERNAME TEXT," +
@@ -184,7 +191,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                     "LEFT JOIN $TABLE_STOCKS s ON p.$COLUMN_PRODUCT_ID = s.$COLUMN_PRODUCT_ID " +
                     "LEFT JOIN $TABLE_PRODUCT_IMAGES pi ON p.$COLUMN_PRODUCT_ID = pi.$COLUMN_PRODUCT_ID"
 
-
+        private const val CREATE_TRIGGER_LOG_DELETED_PRODUCT = """
+                            CREATE TRIGGER IF NOT EXISTS trg_log_deleted_product
+                            AFTER DELETE ON $TABLE_PRODUCTS
+                            BEGIN
+                                INSERT INTO $TABLE_DELETED_LOG (
+                                $COLUMN_DELETED_LOG_DESCRIPTION,
+                                $COLUMN_DELETED_LOG_CREATED_AT
+                                ) VALUES (
+                                'Ürün silindi: ID=' || OLD.$COLUMN_PRODUCT_ID || ', Ad=' || OLD.$COLUMN_PRODUCT_NAME || ', Marka=' || OLD.$COLUMN_PRODUCT_BRAND || ', Model=' || OLD.$COLUMN_PRODUCT_MODEL,
+                                datetime('now', 'localtime')
+                                );
+                            END;
+                            """
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -192,6 +211,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db?.execSQL("PRAGMA foreign_keys=ON;")
 
         // Tabloları oluşturma
+        db?.execSQL(CREATE_TABLE_DELETED_LOG)
         db?.execSQL(CREATE_TABLE_ADMIN)
         db?.execSQL(CREATE_TABLE_CUSTOMERS)
         db?.execSQL(CREATE_TABLE_REQUESTS)
@@ -209,6 +229,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db?.execSQL(CREATE_INDEX_PRODUCT_MODEL)
         db?.execSQL(CREATE_INDEX_PRODUCT_NAME)
         db?.execSQL(CREATE_INDEX_STOCK_PRODUCT_ID)
+
+        //trigger oluşturma
+        db?.execSQL(CREATE_TRIGGER_LOG_DELETED_PRODUCT)
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
