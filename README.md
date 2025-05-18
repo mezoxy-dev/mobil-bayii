@@ -74,6 +74,15 @@ Proje kapsamında kullanılan başlıca tablolar:
 * [Android Developer Guide](https://developer.android.com/)
 * [Kotlin Language Reference](https://kotlinlang.org/docs/home.html)
 
+## 🧑‍🏫 Proje Ekibi
+
+| İsim                        | Görev                    |
+|----------------------------|--------------------------|
+| Mustafa Kerem Çekici       | Uygulama Geliştirici     |
+| Mustafa Mehmet Aslandağ    | Uygulama Geliştirici     |
+| Efe Süzel                  | Veritabanı Tasarımcısı   |
+
+
 ---
 
 © 2025 – Kocaeli Üniversitesi Bilişim Sistemleri Mühendisliği – VTYS Dönem Projesi
