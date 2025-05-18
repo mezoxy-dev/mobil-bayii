@@ -172,10 +172,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val CREATE_VIEW_PRODUCTS_WITH_STOCK =
             "CREATE VIEW IF NOT EXISTS $VIEW_PRODUCTS_WITH_STOCK AS " +
                     "SELECT " +
-                    "p.$COLUMN_PRODUCT_ID AS product_id, " +
-                    "p.$COLUMN_PRODUCT_NAME AS name, " +
-                    "s.$COLUMN_STOCK_QUANTITY AS quantity, " +
-                    "pi.$COLUMN_IMAGE_URL AS imageUrl " +
+                    "p.$COLUMN_PRODUCT_ID, " +
+                    "p.$COLUMN_PRODUCT_NAME, " +
+                    "s.$COLUMN_STOCK_QUANTITY, " +
+                    "p.$COLUMN_PRODUCT_BRAND, " +
+                    "p.$COLUMN_PRODUCT_PRICE, " +
+                    "p.$COLUMN_PRODUCT_DESCRIPTION, " +
+                    "pi.$COLUMN_IMAGE_URL " +
                     "FROM $TABLE_PRODUCTS p " +
                     "LEFT JOIN $TABLE_STOCKS s ON p.$COLUMN_PRODUCT_ID = s.$COLUMN_PRODUCT_ID " +
                     "LEFT JOIN $TABLE_PRODUCT_IMAGES pi ON p.$COLUMN_PRODUCT_ID = pi.$COLUMN_PRODUCT_ID"
@@ -336,7 +339,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun getAllProducts(): List<Urun> {
         val urunList = mutableListOf<Urun>()
         val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $TABLE_PRODUCTS", null)
+        val cursor = db.rawQuery("SELECT * FROM $VIEW_PRODUCTS_WITH_STOCK", null)
 
         if (cursor.moveToFirst()) {
             do {
@@ -345,12 +348,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 val brand = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PRODUCT_BRAND))
                 val price = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_PRODUCT_PRICE))
                 val description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PRODUCT_DESCRIPTION))
+                var imageUrl = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE_URL))
+                var inStock = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STOCK_QUANTITY)) > 0
 
-                // Şimdilik sabit görsel ve stok kontrolü
-                val imageRes = R.drawable.phone1
-                val inStock = true
-
-                urunList.add(Urun(id, imageRes, name, brand, price, description, inStock))
+                urunList.add(Urun(id, imageUrl, name, brand, price, description, inStock))
 
             } while (cursor.moveToNext())
         }
@@ -368,10 +369,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         if (cursor.moveToFirst()) {
             do {
-                val product_id = cursor.getInt(cursor.getColumnIndexOrThrow("product_id"))
-                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
-                val quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"))
-                val imageUrl = cursor.getString(cursor.getColumnIndexOrThrow("imageUrl"))
+                val product_id = cursor.getInt(cursor.getColumnIndexOrThrow("$COLUMN_PRODUCT_ID"))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("$COLUMN_PRODUCT_NAME"))
+                val quantity = cursor.getInt(cursor.getColumnIndexOrThrow("$COLUMN_STOCK_QUANTITY"))
+                val imageUrl = cursor.getString(cursor.getColumnIndexOrThrow("$COLUMN_IMAGE_URL"))
 
                 val phone = StockPhone(
 

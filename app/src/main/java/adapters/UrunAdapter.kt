@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.mezoxy.mobilbayii.R
 import com.mezoxy.mobilbayii.SepetManager
 import dataClasses.Urun
@@ -37,11 +38,20 @@ class UrunAdapter(private var urunList: List<Urun>) : RecyclerView.Adapter<UrunA
     override fun onBindViewHolder(holder: UrunViewHolder, position: Int) {
         val urun = filteredUrunList[position]
 
-        holder.resim.setImageResource(urun.resim)
         holder.ad.text = urun.ad
         holder.marka.text = urun.marka
         holder.ozellikler.text = urun.ozellikler
         holder.fiyat.text = urun.fiyat.toString()
+        if (!urun.image_url.isNullOrEmpty()) {
+            Glide.with(holder.resim.context)
+                .load(urun.image_url)
+                .placeholder(R.drawable.phone1)
+                .error(R.drawable.phone1)
+                .into(holder.resim)
+        } else {
+            holder.resim.setImageResource(R.drawable.phone1)
+        }
+
 
         holder.sepeteEkleBtn.setOnClickListener {
             if (!SepetManager.sepetList.contains(urun)) {

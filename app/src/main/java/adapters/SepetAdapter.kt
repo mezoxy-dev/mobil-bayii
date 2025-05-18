@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.mezoxy.mobilbayii.R
 import dataClasses.Urun
 
@@ -34,7 +35,6 @@ class SepetAdapter(
     override fun onBindViewHolder(holder: SepetViewHolder, position: Int) {
         val urun = sepetList[position]
 
-        holder.image.setImageResource(urun.resim)
         holder.name.text = urun.ad
         holder.brand.text = "Marka: ${urun.marka}"
         holder.specs.text = "Özellikler: ${urun.ozellikler}"
@@ -47,6 +47,15 @@ class SepetAdapter(
         )
         holder.price.text = "₺%.2f".format(urun.fiyat)
         holder.removeButton.text = "Sepetten Çıkar"
+        if (!urun.image_url.isNullOrEmpty()) {
+            Glide.with(holder.image.context)
+                .load(urun.image_url)
+                .placeholder(R.drawable.phone1)
+                .error(R.drawable.phone1)
+                .into(holder.image)
+        } else {
+            holder.image.setImageResource(R.drawable.phone1)
+        }
 
         holder.removeButton.setOnClickListener {
             sepetList.removeAt(position)

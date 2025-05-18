@@ -30,8 +30,8 @@ class MainActivity : AppCompatActivity() {
     private fun initDataBase()
     {
         myDatabaseHelper = DatabaseHelper(this)
-//        myDatabaseHelper.addAdmin("admin", "admin")
-//        myDatabaseHelper.addSampleProductsAndStocks()
+        myDatabaseHelper.addAdmin("admin", "admin")
+        //myDatabaseHelper.addSampleProductsAndStocks()
 
     }
 

@@ -4,7 +4,7 @@ import java.io.Serializable
 
 data class Urun(
     val urun_id: Int,
-    val resim: Int,
+    val image_url: String?,
     val ad: String,
     val marka: String,
     val fiyat: Double,
