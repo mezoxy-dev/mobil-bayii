@@ -514,5 +514,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
+    fun deleteProductById(id: Int): Boolean {
+        return try {
+            val db = this.writableDatabase
+            val sql = "DELETE FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_ID = $id"
+            db.execSQL(sql)
+            db.close()
+            true
+        } catch (e: Exception) {
+            Log.e("DB_ERROR", "Silme hatası: ${e.message}")
+            false
+        }
+    }
+
+
 
 }
