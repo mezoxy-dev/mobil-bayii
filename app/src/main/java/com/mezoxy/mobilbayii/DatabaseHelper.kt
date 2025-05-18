@@ -175,7 +175,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                     "p.$COLUMN_PRODUCT_ID AS product_id, " +
                     "p.$COLUMN_PRODUCT_NAME AS name, " +
                     "s.$COLUMN_STOCK_QUANTITY AS quantity, " +
-                    "pi.$COLUMN_IMAGE_URL AS imageUrl " +
+                    "pi.$COLUMN_IMAGE_URL AS image_url " +
                     "FROM $TABLE_PRODUCTS p " +
                     "LEFT JOIN $TABLE_STOCKS s ON p.$COLUMN_PRODUCT_ID = s.$COLUMN_PRODUCT_ID " +
                     "LEFT JOIN $TABLE_PRODUCT_IMAGES pi ON p.$COLUMN_PRODUCT_ID = pi.$COLUMN_PRODUCT_ID"
@@ -322,10 +322,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         if (cursor.moveToFirst()) {
             do {
-                val product_id = cursor.getInt(cursor.getColumnIndexOrThrow("product_id"))
-                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
-                val quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"))
-                val imageUrl = cursor.getString(cursor.getColumnIndexOrThrow("imageUrl"))
+                val product_id = cursor.getInt(cursor.getColumnIndexOrThrow("$COLUMN_PRODUCT_ID"))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("$COLUMN_PRODUCT_NAME"))
+                val quantity = cursor.getInt(cursor.getColumnIndexOrThrow("$COLUMN_STOCK_QUANTITY"))
+                val imageUrl = cursor.getString(cursor.getColumnIndexOrThrow("$COLUMN_IMAGE_URL"))
 
                 val phone = StockPhone(
 
@@ -400,6 +400,20 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             false
         }
     }
+
+    fun deleteProductById(id: Int): Boolean {
+        return try {
+            val db = this.writableDatabase
+            val sql = "DELETE FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_ID = $id"
+            db.execSQL(sql)
+            db.close()
+            true
+        } catch (e: Exception) {
+            Log.e("DB_ERROR", "Silme hatası: ${e.message}")
+            false
+        }
+    }
+
 
 
 }
