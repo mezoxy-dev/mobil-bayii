@@ -76,11 +76,11 @@ Proje kapsamında kullanılan başlıca tablolar:
 
 ## 🧑‍🏫 Proje Ekibi
 
-| İsim                        | Görev                    |
-|----------------------------|--------------------------|
-| Mustafa Kerem Çekici       | Uygulama Geliştirici     |
-| Mustafa Mehmet Aslandağ    | Uygulama Geliştirici     |
-| Efe Süzel                  | Veritabanı Tasarımcısı   |
+| İsim                                                        | Görev                    |
+|-------------------------------------------------------------|--------------------------|
+| [Mustafa Kerem Çekici](https://github.com/Sayicon)          | Uygulama Geliştirici     |
+| [Mustafa Mehmet Aslandağ](https://github.com/mezoxy-dev)    | Uygulama Geliştirici     |
+| [Efe Süzel](https://github.com/efesu)                       | Veritabanı Tasarımcısı   |
 
 
 ---
