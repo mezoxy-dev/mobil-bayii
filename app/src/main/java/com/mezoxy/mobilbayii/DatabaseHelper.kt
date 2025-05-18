@@ -1,16 +1,13 @@
 package com.mezoxy.mobilbayii
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import dataClasses.StockPhone
 import dataClasses.Urun
-import java.util.concurrent.ExecutionException
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,null,
     DATABASE_VERSION) {
@@ -175,13 +172,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val CREATE_VIEW_PRODUCTS_WITH_STOCK =
             "CREATE VIEW IF NOT EXISTS $VIEW_PRODUCTS_WITH_STOCK AS " +
                     "SELECT " +
-                    "p.$COLUMN_PRODUCT_ID, " +
-                    "p.$COLUMN_PRODUCT_NAME, " +
-                    "s.$COLUMN_STOCK_QUANTITY, " +
-                    "pi.$COLUMN_IMAGE_URL " +
+                    "p.$COLUMN_PRODUCT_ID AS product_id, " +
+                    "p.$COLUMN_PRODUCT_NAME AS name, " +
+                    "s.$COLUMN_STOCK_QUANTITY AS quantity, " +
+                    "pi.$COLUMN_IMAGE_URL AS imageUrl " +
                     "FROM $TABLE_PRODUCTS p " +
                     "LEFT JOIN $TABLE_STOCKS s ON p.$COLUMN_PRODUCT_ID = s.$COLUMN_PRODUCT_ID " +
                     "LEFT JOIN $TABLE_PRODUCT_IMAGES pi ON p.$COLUMN_PRODUCT_ID = pi.$COLUMN_PRODUCT_ID"
+
 
     }
 
@@ -362,6 +360,37 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
 
+    fun getAllFromStocks(): List<StockPhone> {
+        val stockList = mutableListOf<StockPhone>()
+        val db = this.readableDatabase
+        val query = "SELECT * FROM $VIEW_PRODUCTS_WITH_STOCK" // tablo adın buysa doğru, değilse değiştir
+        val cursor = db.rawQuery(query, null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val product_id = cursor.getInt(cursor.getColumnIndexOrThrow("product_id"))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+                val quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"))
+                val imageUrl = cursor.getString(cursor.getColumnIndexOrThrow("imageUrl"))
+
+                val phone = StockPhone(
+
+                    product_id = product_id,
+                    name = name,
+                    quantity = quantity,
+                    imageUrl = imageUrl
+                )
+                stockList.add(phone)
+
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+        return stockList
+    }
+
+
     fun addSampleProductsAndStocks() {
         val db = this.writableDatabase
 
@@ -389,8 +418,32 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (9, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'Edge 30' LIMIT 1));")
             db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (14, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'G50' LIMIT 1));")
             db.execSQL("INSERT INTO $TABLE_STOCKS ($COLUMN_STOCK_QUANTITY, $COLUMN_PRODUCT_ID) VALUES (7, (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'ROG Phone 6' LIMIT 1));")
+
+            // Resimler
+            db.execSQL("INSERT INTO $TABLE_PRODUCT_IMAGES ($COLUMN_PRODUCT_ID, $COLUMN_IMAGE_URL) VALUES ((SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'Galaxy S21' LIMIT 1), 'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s21-5g-1.jpg');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCT_IMAGES ($COLUMN_PRODUCT_ID, $COLUMN_IMAGE_URL) VALUES ((SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'iPhone 14 Pro' LIMIT 1), 'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-14-pro-1.jpg');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCT_IMAGES ($COLUMN_PRODUCT_ID, $COLUMN_IMAGE_URL) VALUES ((SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'Mi 12 Lite' LIMIT 1), 'https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-12-lite-1.jpg');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCT_IMAGES ($COLUMN_PRODUCT_ID, $COLUMN_IMAGE_URL) VALUES ((SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = '11' LIMIT 1), 'https://fdn2.gsmarena.com/vv/pics/oneplus/oneplus-11-1.jpg');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCT_IMAGES ($COLUMN_PRODUCT_ID, $COLUMN_IMAGE_URL) VALUES ((SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'Pixel 7' LIMIT 1), 'https://fdn2.gsmarena.com/vv/pics/google/google-pixel7-1.jpg');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCT_IMAGES ($COLUMN_PRODUCT_ID, $COLUMN_IMAGE_URL) VALUES ((SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'P40 Pro' LIMIT 1), 'https://fdn2.gsmarena.com/vv/pics/huawei/huawei-p40-pro-1.jpg');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCT_IMAGES ($COLUMN_PRODUCT_ID, $COLUMN_IMAGE_URL) VALUES ((SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'GT Neo 3' LIMIT 1), 'https://fdn2.gsmarena.com/vv/pics/realme/realme-gt-neo3-1.jpg');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCT_IMAGES ($COLUMN_PRODUCT_ID, $COLUMN_IMAGE_URL) VALUES ((SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'Edge 30' LIMIT 1), 'https://fdn2.gsmarena.com/vv/pics/motorola/motorola-edge-30-1.jpg');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCT_IMAGES ($COLUMN_PRODUCT_ID, $COLUMN_IMAGE_URL) VALUES ((SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'G50' LIMIT 1), 'https://fdn2.gsmarena.com/vv/pics/nokia/nokia-g50-1.jpg');")
+            db.execSQL("INSERT INTO $TABLE_PRODUCT_IMAGES ($COLUMN_PRODUCT_ID, $COLUMN_IMAGE_URL) VALUES ((SELECT $COLUMN_PRODUCT_ID FROM $TABLE_PRODUCTS WHERE $COLUMN_PRODUCT_MODEL = 'ROG Phone 6' LIMIT 1), 'https://fdn2.gsmarena.com/vv/pics/asus/asus-rog-phone6-1.jpg');")
         } catch (e: Exception) {
             Log.d("SQL_ERROR", e.toString())
+        }
+    }
+    // Örnek: Basit SQLite Helper içinde güncelleme fonksiyonu
+    fun updateStockQuantity(product_id: Int, newQuantity: Int): Boolean {
+        return try {
+            val db = writableDatabase
+            val query = "UPDATE $TABLE_STOCKS SET quantity = ? WHERE product_id = ?"
+            db.execSQL(query, arrayOf(newQuantity, product_id))
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
 

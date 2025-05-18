@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/action_add_stock"
+        android:title="Stok Ekle"
+        android:icon="@drawable/add_sign"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_remove_stock"
+        android:title="Stok Çıkar"
+        android:icon="@drawable/remove_sign"
+        app:showAsAction="ifRoom" />
+</menu>

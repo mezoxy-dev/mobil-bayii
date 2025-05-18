@@ -5,40 +5,57 @@
     android:id="@+id/main_content_stock"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_light"
     tools:context=".StockActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_stock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        >
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_stock"
+            android:id="@+id/toolbarStock"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title="Stok Durumu" />
+            android:background="@color/facebook_blue"
+            android:title="📦 Stok Durumu"
+            android:titleTextColor="@android:color/white"
+            app:titleCentered="true"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView_stock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/searchview_background"
+            android:iconifiedByDefault="false"
+            android:queryHint="📱 Ürün ara..."
+            android:layout_margin="8dp"
+            android:elevation="2dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_stock"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        android:clipToPadding="false"
+        android:padding="4dp"
+        android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_stock_phone" />
 
-    <!-- İsteğe Bağlı: Stokta ürün yoksa gösterilecek bir mesaj -->
     <TextView
         android:id="@+id/textView_no_stock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stokta ürün bulunmamaktadır."
+        android:text="😕 Stokta ürün bulunmamaktadır."
         android:textSize="18sp"
+        android:textColor="@color/gray"
+        android:gravity="center"
         android:visibility="gone"
         android:layout_gravity="center"
-        tools:visibility="visible"/>
-
+        android:padding="16dp"
+        tools:visibility="visible" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
