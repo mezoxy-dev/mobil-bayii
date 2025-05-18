@@ -9,5 +9,5 @@ data class Urun(
     val marka: String,
     val fiyat: Double,
     val ozellikler: String,
-    val stoktaVarMi: Boolean
+    var stoktaVarMi: Boolean
 ) : Serializable

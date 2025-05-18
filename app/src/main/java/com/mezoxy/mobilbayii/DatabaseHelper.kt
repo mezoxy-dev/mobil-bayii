@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import dataClasses.StockPhone
 import dataClasses.Urun
 import java.util.concurrent.ExecutionException
@@ -123,9 +124,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         private const val CREATE_TABLE_REQUESTS = "CREATE TABLE $TABLE_REQUESTS (" +
                 "$COLUMN_REQUEST_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "$COLUMN_REQUEST_PRICE_AT_PURCHASE REAL," +
                 "$COLUMN_REQUEST_ORDER_CONF INTEGER DEFAULT 0," +
-                "$COLUMN_REQUEST_DATE TEXT);"
+                "$COLUMN_REQUEST_DATE TEXT DEFAULT (datetime('now', 'localtime')));"
 
         private const val CREATE_TABLE_PRODUCTS = "CREATE TABLE $TABLE_PRODUCTS (" +
                 "$COLUMN_PRODUCT_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -171,7 +171,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 "FOREIGN KEY($COLUMN_PRODUCT_ID) REFERENCES $TABLE_PRODUCTS($COLUMN_PRODUCT_ID) ON DELETE SET NULL ON UPDATE CASCADE);"
         // Bir istek silinirse ilgili kalemler silinsin. Ürün silinirse bu kalemlerdeki ürün ID'si null olsun.
 
-        //Ürünleri ve onların stok miktarlarını birlikte görüntüleyen view
+        //Ürünleri, stok miktarlarını ve img leri birlikte görüntüleyen view
         private const val CREATE_VIEW_PRODUCTS_WITH_STOCK =
             "CREATE VIEW IF NOT EXISTS $VIEW_PRODUCTS_WITH_STOCK AS " +
                     "SELECT " +
@@ -278,7 +278,53 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return false
     }
 
-    fun deleteByQuery(query: String): Exception? {
+    fun insertRequest(): Long {
+        val db = writableDatabase
+
+        // 1. Kaydı ekle (order_confirmation = 0 yani false)
+        db.execSQL("INSERT INTO $TABLE_REQUESTS ($COLUMN_REQUEST_ORDER_CONF) VALUES (0)")
+
+        // 2. Eklenen kaydın ID'sini döndür
+        val cursor = db.rawQuery("SELECT last_insert_rowid()", null)
+        var id = -1L
+        if (cursor.moveToFirst()) {
+            id = cursor.getLong(0)
+        }
+        cursor.close()
+        return id
+    }
+
+    fun insertRequestItem(requestId: Long, productId: Int, price: Double) {
+        val db = writableDatabase
+        db.execSQL("INSERT INTO $TABLE_REQUEST_ITEMS ($COLUMN_REQUEST_ID, $COLUMN_PRODUCT_ID, $COLUMN_REQUEST_PRICE_AT_PURCHASE) VALUES ($requestId, $productId, $price)")
+    }
+
+
+    fun urunStoktaVarMi(urunId: Int): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM $TABLE_STOCKS WHERE $COLUMN_PRODUCT_ID = ?",
+            arrayOf(urunId.toString())
+        )
+        if (cursor.moveToFirst()) {
+            cursor.close()
+            return true
+        }
+        cursor.close()
+        return false
+    }
+
+    /* Ekranda Mesaj görüntülemek için */
+    fun showStockAlert(mesaj: String, context: Context, title: String) {
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setMessage(mesaj)
+            .setPositiveButton("Tamam", null)
+            .show()
+    }
+
+    /* Gerekmedikçe kullanmamak lazım */
+    fun execByQuery(query: String): Exception? {
         try {
             val db = this.readableDatabase
             db.execSQL(query)

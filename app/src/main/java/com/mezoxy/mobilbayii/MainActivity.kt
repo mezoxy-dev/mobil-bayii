@@ -95,6 +95,7 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_home -> {
                     val intent = Intent(this, MainActivity::class.java)
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
                     startActivity(intent)
                     finish()
                     true
@@ -102,12 +103,14 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.nav_sepet_page -> {
                     val intent = Intent(this, SepetActivity::class.java)
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
                     startActivity(intent)
                     true
                 }
 
                 R.id.nav_admin_page -> {
                     val intent = Intent(this, AdminGirisActivity::class.java)
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
                     startActivity(intent)
                     true
                 }
