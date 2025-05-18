@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import dataClasses.Request
 import dataClasses.StockPhone
 import dataClasses.Urun
 
@@ -360,6 +361,57 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return urunList
     }
 
+    fun getAllRequests(): MutableList<Request> {
+        val requestList = mutableListOf<Request>()
+        val db = this.readableDatabase
+
+        val requestQuery = "SELECT * FROM requests"
+        val cursor = db.rawQuery(requestQuery, null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val requestId = cursor.getInt(cursor.getColumnIndexOrThrow("$COLUMN_REQUEST_ID"))
+                val orderConf = cursor.getInt(cursor.getColumnIndexOrThrow("$COLUMN_REQUEST_ORDER_CONF"))
+
+                // Her bir request için ilgili ürünleri al
+                val urunList = getUrunlerForRequest(requestId, db)
+                val request = Request(requestId, orderConf == 1, urunList)
+                requestList.add(request)
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+        return requestList
+    }
+
+    private fun getUrunlerForRequest(requestId: Int, db: SQLiteDatabase): MutableList<Urun> {
+        val urunList = mutableListOf<Urun>()
+        val db = this.readableDatabase
+        val urunQuery = "SELECT * FROM $VIEW_PRODUCTS_WITH_STOCK WHERE $COLUMN_PRODUCT_ID IN (SELECT $COLUMN_PRODUCT_ID FROM $TABLE_REQUEST_ITEMS WHERE $COLUMN_REQUEST_ID = $requestId)"
+
+
+        val urunCursor = db.rawQuery(urunQuery, null)
+        if (urunCursor.moveToFirst()) {
+            do {
+                val urunId = urunCursor.getInt(urunCursor.getColumnIndexOrThrow("$COLUMN_PRODUCT_ID"))
+                val urunAdi = urunCursor.getString(urunCursor.getColumnIndexOrThrow("$COLUMN_PRODUCT_NAME"))
+                val urunFiyat = urunCursor.getDouble(urunCursor.getColumnIndexOrThrow("$COLUMN_PRODUCT_PRICE"))
+                val urunAciklama = urunCursor.getString(urunCursor.getColumnIndexOrThrow("$COLUMN_PRODUCT_DESCRIPTION"))
+                val urunResim = urunCursor.getString(urunCursor.getColumnIndexOrThrow("$COLUMN_IMAGE_URL"))
+                val urunMarka = urunCursor.getString(urunCursor.getColumnIndexOrThrow("$COLUMN_PRODUCT_BRAND"))
+
+                val stokMiktar = urunCursor.getInt(urunCursor.getColumnIndexOrThrow("$COLUMN_STOCK_QUANTITY"))
+                val urun = Urun(urunId, urunResim, urunAdi, urunMarka, urunFiyat, urunAciklama, stokMiktar > 0)
+
+                urunList.add(urun)
+            } while (urunCursor.moveToNext())
+        }
+        urunCursor.close()
+        return urunList
+    }
+
+
 
     fun getAllFromStocks(): List<StockPhone> {
         val stockList = mutableListOf<StockPhone>()
@@ -390,6 +442,20 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
         return stockList
     }
+
+    fun initializeDatabaseIfNeeded(context: Context) {
+        val sharedPref = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isDataInserted = sharedPref.getBoolean("isDataInserted", false)
+
+        if (!isDataInserted) {
+            addSampleProductsAndStocks()
+            sharedPref.edit().putBoolean("isDataInserted", true).apply()
+            Log.d("DB_INIT", "Sample data inserted.")
+        } else {
+            Log.d("DB_INIT", "Sample data already inserted. Skipping.")
+        }
+    }
+
 
 
     fun addSampleProductsAndStocks() {

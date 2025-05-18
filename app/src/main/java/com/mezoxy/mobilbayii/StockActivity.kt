@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mezoxy.mobilbayii.databinding.ActivityStockBinding
 import dataClasses.StockPhone
 
+
 class StockActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityStockBinding
@@ -69,6 +70,11 @@ class StockActivity : AppCompatActivity() {
             R.id.action_remove_stock -> {
                 // Stok çıkarma işlemi başlat
                 Toast.makeText(this, "Stok Çıkar seçildi", Toast.LENGTH_SHORT).show()
+                return true
+            }
+            android.R.id.home -> {
+                // Geri oku tıklayınca ne olacak?
+                onBackPressedDispatcher.onBackPressed()  // mevcut Activity'yi kapatır
                 return true
             }
         }

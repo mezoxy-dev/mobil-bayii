@@ -16,10 +16,13 @@
         android:theme="@style/Theme.MobilBayii"
         tools:targetApi="31">
         <activity
+            android:name=".RequestsActivity"
+            android:exported="false" />
+        <activity
             android:name=".AdminGirisActivity"
             android:exported="true">
-        </activity>
 
+        </activity>
         <activity
             android:name=".AdminPageActivity"
             android:exported="true">
@@ -30,11 +33,7 @@
             android:exported="true">
 
         </activity>
-        <activity
-            android:name=".OrderConfirmationActivity"
-            android:exported="true">
 
-        </activity>
         <activity
             android:name=".OrdersActivity"
             android:exported="true">
@@ -52,6 +51,7 @@
         <activity
             android:name=".SepetActivity"
             android:exported="true">
+
         </activity>
         <activity
             android:name=".UserPropertiesActivity"

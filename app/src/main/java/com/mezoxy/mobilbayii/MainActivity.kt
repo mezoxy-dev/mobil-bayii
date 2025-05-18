@@ -31,8 +31,7 @@ class MainActivity : AppCompatActivity() {
     {
         myDatabaseHelper = DatabaseHelper(this)
         myDatabaseHelper.addAdmin("admin", "admin")
-        //myDatabaseHelper.addSampleProductsAndStocks()
-
+        myDatabaseHelper.initializeDatabaseIfNeeded(this)
     }
 
     private fun initSearchBar(adapter: UrunAdapter) {

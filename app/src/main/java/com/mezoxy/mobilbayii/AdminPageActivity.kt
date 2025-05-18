@@ -54,8 +54,8 @@ class AdminPageActivity : AppCompatActivity() {
         startActivity(intent)
 
     }
-    fun goToDemands(view: View?){
-        val intent = Intent(this@AdminPageActivity, OrderConfirmationActivity::class.java)
+    fun goToRequests(view: View?){
+        val intent = Intent(this@AdminPageActivity, RequestsActivity::class.java)
         startActivity(intent)
     }
 }

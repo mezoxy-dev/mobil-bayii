@@ -157,11 +157,11 @@
                 android:id="@+id/demandListButton4"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginTop="30dp"
+                android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:contentDescription="Talep Listesi"
-                android:onClick="goToDemands"
+                android:onClick="goToRequests"
                 android:scaleType="fitCenter"
                 android:src="@drawable/checklist_demands" />
 
