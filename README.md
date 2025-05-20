@@ -56,11 +56,8 @@ Proje kapsamında kullanılan başlıca tablolar:
 ## 📁 Proje Dosyaları
 
 * `app/` – Android uygulama kaynak kodları
-* `mobilbayii.db` – Örnek SQLite veritabanı
-* `grupno_sql_betikleri.txt` – SQL betikleri
-* `grupno_kaynakkod.txt` – Tüm kaynak kodların düz metin hali
 * `grupno_rapor.pdf` – IEEE formatlı proje raporu
-* `grupno_github.txt` – GitHub link bilgisi
+
 
 ## 📍 Notlar
 
